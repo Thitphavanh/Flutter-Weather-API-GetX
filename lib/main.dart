@@ -39,7 +39,9 @@ class WeatherApp extends StatelessWidget {
         elevation: 0.0,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              
+            },
             icon: const Icon(
               Icons.light_mode,
               color: Vx.gray700,
@@ -162,9 +164,9 @@ class WeatherApp extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          '${index + 1} ກາງເວັນ'.text.gray100.make(),
+                          '${index + 1} ກາງເວັນ'.text.black.make(),
                           Image.asset('assets/weather/09n.png'),
-                          '38$degree'.text.white.make(),
+                          '38$degree'.text.black.make(),
                         ],
                       ),
                     );
