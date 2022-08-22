@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_api_getx/controllers/main_controller.dart';
 import 'package:flutter_weather_api_getx/models/current_weather.dart';
+import 'package:flutter_weather_api_getx/models/hourly_weather.dart';
 import 'package:flutter_weather_api_getx/our_theme.dart';
 import 'package:flutter_weather_api_getx/services/api_services.dart';
 import 'package:get/get.dart';
@@ -183,32 +184,55 @@ class WeatherApp extends StatelessWidget {
                     10.heightBox,
                     const Divider(),
                     10.heightBox,
-                    SizedBox(
-                      height: 150.0,
-                      child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: 6,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            margin: const EdgeInsets.only(right: 4.0),
-                            decoration: BoxDecoration(
-                              color: cardColor,
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Column(
-                              children: [
-                                '${index + 1} ກາງເວັນ'.text.black.make(),
-                                Image.asset('assets/weather/09n.png'),
-                                '38$degree'.text.black.make(),
-                              ],
+                    FutureBuilder(
+                      future: controller.hourlyWeatherData,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          HourlyWeatherData hourlyData = snapshot.data;
+                          return SizedBox(
+                            height: 160.0,
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: hourlyData.list!.length > 6
+                                  ? 6
+                                  : hourlyData.list!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var time = DateFormat.jm().format(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                    hourlyData.list![index].dt!.toInt() * 1000,
+                                  ),
+                                );
+                                return Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  margin: const EdgeInsets.only(right: 4.0),
+                                  decoration: BoxDecoration(
+                                    color: cardColor,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      time.text.black.make(),
+                                      Image.asset(
+                                        'assets/weather/${hourlyData.list![index].weather![0].icon}.png',
+                                        width: 100.0,
+                                      ),
+                                      '${hourlyData.list![index].main!.temp}$degree'
+                                          .text
+                                          .black
+                                          .make(),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                           );
-                        },
-                      ),
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
                     ),
                     10.heightBox,
                     const Divider(),
