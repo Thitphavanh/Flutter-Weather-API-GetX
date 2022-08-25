@@ -7,8 +7,8 @@ class MainController extends GetxController {
   @override
   void onInit() async {
     await getUserLocation();
-    currentWeatherData = getCurrentWeather(latitude.value, longtitude.value);
-    hourlyWeatherData = getHourlyWeather(latitude.value, longtitude.value);
+    currentWeatherData = getCurrentWeather(latitude.value, longitude.value);
+    hourlyWeatherData = getHourlyWeather(latitude.value, longitude.value);
     super.onInit();
   }
 
@@ -16,7 +16,7 @@ class MainController extends GetxController {
   dynamic currentWeatherData;
   dynamic hourlyWeatherData;
   var latitude = 0.0.obs;
-  var longtitude = 0.0.obs;
+  var longitude = 0.0.obs;
   var isLoaded = false.obs;
 
   changeTheme() {
@@ -30,22 +30,24 @@ class MainController extends GetxController {
 
     isLocationEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isLocationEnabled) {
-      return Future.error('ຕຳແໜ່ງບໍ່ໄດ້ເປີດໃຊ້ງານ');
+      return Future.error("Location is not enabled");
     }
+
     userPermission = await Geolocator.checkPermission();
     if (userPermission == LocationPermission.deniedForever) {
-      return Future.error('ການອະນຸຍາດຖືກປະຕິເສດ ເປີດໃຊ້ງານ');
+      return Future.error("Permission is denied forever");
     } else if (userPermission == LocationPermission.denied) {
       userPermission = await Geolocator.requestPermission();
       if (userPermission == LocationPermission.denied) {
-        return Future.error('ການອະນຸຍາດຖືກປະຕິເສດ');
+        return Future.error("Permission is denied");
       }
     }
+
     return await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high)
         .then((value) {
       latitude.value = value.latitude;
-      longtitude.value = value.longitude;
+      longitude.value = value.longitude;
       isLoaded.value = true;
     });
   }

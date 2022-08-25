@@ -77,7 +77,6 @@ class WeatherApp extends StatelessWidget {
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       CurrentWeatherData data = snapshot.data;
-
                       return SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Column(
